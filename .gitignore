@@ -1,0 +1,7 @@
+.env
+.venv/
+data/
+logs/
+evidence/
+__pycache__/
+*.py[oc]
