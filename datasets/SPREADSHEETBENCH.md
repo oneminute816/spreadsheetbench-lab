@@ -15,7 +15,7 @@ The conversion creates the package's `dataset.json` and `index.json`, preserving
 original task order and listing each input/answer workbook pair. The current
 configuration selects `12307`, `15380`, `15829`, `13-1`, and `17-35`.
 
-The trial shows OpenHands only the first input workbook. It must create
+The trial shows the Agent only the first input workbook. It must create
 `/workspace/solution.py` accepting input and output paths and produce
 `/workspace/output.xlsx`. After the agent stops, the evaluator runs that script
 on cases 2 and 3, then exposes the reference workbooks only to the verifier.
@@ -79,3 +79,29 @@ read-only workbooks. Their original `result.json` files retain `reward=null`;
 the stored output workbooks were scored separately with the corrected verifier.
 See the personal delivery repository's `REPORT.md` for the per-task results and
 failure analysis.
+
+## DSH single-task check
+
+The `dsh-spreadsheetbench.toml` configuration uses the same DeepSeek Flash
+endpoint and dataset with DSH's native `terminal` tool. Its tool set and stop
+condition differ from OpenHands, so the single result is a connectivity check,
+not a matched harness comparison. In the Linux host container, install the
+profile dependencies once before running DSH:
+
+```sh
+apt-get update
+apt-get install -y --no-install-recommends nodejs npm
+npm install --global pnpm@9.15.4
+DSH_HOME="$PWD/config/dsh" /tmp/research-venv/bin/dsh plugin --profile sdk-minimal install
+uv run --no-sync python -m evaluation \
+  --dataset config/datasets/spreadsheetbench.toml \
+  --environment config/environments/spreadsheetbench.toml \
+  --agent config/agents/dsh-spreadsheetbench.toml \
+  --evaluation config/evaluation/spreadsheetbench.toml \
+  --name spreadsheetbench-12307-dsh-check --task 12307 --plan
+```
+
+The preview should show one trial. Remove `--plan` and choose a fresh name for
+the actual run. The first local DSH attempt failed before any model call because
+the profile plugin was absent; after installation, the next attempt completed
+and passed all three workbook cases. Both attempts remain in ignored logs.

@@ -39,4 +39,8 @@
 - `13-1`、`17-35` 的原始 `result.json` 均为 `reward=null`，`verifier/test-stdout.txt` 指向只读 `EmptyCell` 没有 `coordinate` 属性。修正评分器为按行列坐标同步遍历后，复评目录中的 `cases.json` 均为 `[1,1,1]`。两题的 `artifacts/spreadsheetbench/replay.json` 显示后两个用例脚本退出码均为 0。
 - `15380` 原始 `verifier/cases.json` 报用例 2 的 `Sheet3!B3` 应为 `FEB`、实际 `SEP`，用例 3 则应为 `SEP`、实际 `FEB`。检查官方编号文件发现：用例 2 输入 `A3=2014_09_D2_Reminder_EN`，同编号答案却改成 `A3=2014_02_D2_Reminder_EN`；用例 3 输入是 `02`，同编号答案是 `09`。两个答案中的 `B3` 分别对应答案自身的 `A3`。适配器按相同编号配对，符合资源包文件名；这提示原始用例 2、3 的输入与答案可能错配。当前严格分仍按原始文件为 0，正式统计前应核实官方配对，不擅自交换答案。
 
-每个 trial 的 `agent/trace/`、`agent/usage.jsonl`、`agent/usage-config.json`、`artifacts/spreadsheetbench/`、`verifier/` 和 `result.json` 保存在本机 Git 忽略的 `research/logs/exp/spreadsheetbench/`。下一阶段先在相同题目上验证 DSH 接入，再确定固定的 10 题；正式矩阵为 10 题 × 3 轮 × 2 模型 × 2 harness，共 120 trial，需分别记录有效评分覆盖率和失败类型。
+## DSH 连通性实验
+
+另用 `deepseek-flash`、DSH、`no-skill` 在 `12307` 上运行一次。首次尝试在 Agent 初始化阶段因 `sdk-minimal` profile 缺少 `dsh-research-tools` 插件而退出，没有模型调用。安装 profile 依赖后，新 trial 正常结束，三个用例均通过，严格分 1.0；6 次模型调用，耗时 91.4 秒。DSH trace 原样记录未缓存输入 2,821、缓存读取 18,971、输出 6,931 tokens，三项合计 28,723 tokens。其工具仅有 `terminal`，结束条件与 OpenHands 不同；这个单题结果只能说明 DSH 已接通，不能据此比较两个 harness。
+
+每个 trial 的 `agent/trace/`、`agent/usage.jsonl`、`agent/usage-config.json`、`artifacts/spreadsheetbench/`、`verifier/` 和 `result.json` 保存在本机 Git 忽略的 `research/logs/exp/spreadsheetbench/`。下一阶段需固定相同任务、工具能力、预算和重复次数，再进行正式对照。正式矩阵为 10 题 × 3 轮 × 2 模型 × 2 harness，共 120 trial，需分别记录有效评分覆盖率和失败类型。

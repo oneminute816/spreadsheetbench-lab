@@ -1,0 +1,14 @@
+[model]
+provider = "deepseek-official"
+model = "deepseek-flash"
+base_url = "https://uniapi.thingo.com.cn/v1"
+api_key_env = "THINGO_UNI_API_KEY"
+
+[agent]
+runner = "harness.dsh.runner:execute"
+recorder = "agent_session_analyzer:DshRecorder"
+cost_tracking = true
+profile = "sdk-minimal"
+tool_timeout_sec = 120
+max_output_chars = 20000
+tools = ["terminal"]
