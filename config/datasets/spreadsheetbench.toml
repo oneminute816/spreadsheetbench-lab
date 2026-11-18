@@ -1,0 +1,5 @@
+[dataset]
+package = "../../data/spreadsheetbench"
+task_ids = ["12307"]
+loader = "datasets.spreadsheetbench:load_tasks"
+prepare = "datasets.spreadsheetbench:prepare_task"
