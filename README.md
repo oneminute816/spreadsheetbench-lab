@@ -17,4 +17,4 @@ uv run python -m datasets.spreadsheetbench_package data/spreadsheetbench
 
 这会生成主框架读取的 `data/spreadsheetbench/dataset.json` 和 `index.json`。原始 912 题、工作簿和生成的资源包均不入 Git。当前配置选择 `12307`、`15380`、`15829`、`13-1`、`17-35`，每题一次，条件为 `no-skill`。运行前在本机被 Git 忽略的 `research/.env` 中配置 `THINGO_UNI_API_KEY`、`RESEARCH_PROJECT_ID` 和 `RESEARCH_USER_ID`；执行实验会调用付费模型。
 
-五题均产生了 Agent 输出和 trace；其中三题在原始 trial 中有有效评分，另两题因评分器异常保留 `reward=null`，随后使用保存的输出工作簿离线复评。详细结果见[报告](REPORT.md)。正式的 10 题 × 3 轮 × 2 模型 × 2 harness 矩阵尚未运行。
+五题均产生了 Agent 输出和 trace；其中三题在原始 trial 中有有效评分，另两题因评分器异常保留 `reward=null`，随后使用保存的输出工作簿离线复评。另用 `dsh-spreadsheetbench.toml` 对 `12307` 做了一次 DSH 连通性实验。详细结果见[报告](REPORT.md)。正式的 10 题 × 3 轮 × 2 模型 × 2 harness 矩阵尚未运行。
