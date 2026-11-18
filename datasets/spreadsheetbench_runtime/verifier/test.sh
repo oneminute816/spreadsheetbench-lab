@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 mkdir -p /logs/verifier
-python /verifier/score.py
+exec python /verifier/score.py

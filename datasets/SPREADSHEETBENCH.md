@@ -1,4 +1,4 @@
-# SpreadsheetBench v0.1 baseline
+# SpreadsheetBench v0.1 first-week baseline
 
 This adapter uses the original 912-question archive. Keep the archive outside Git;
 `data/*` is ignored by this repository. The original `dataset.json` is a list of
@@ -13,7 +13,7 @@ uv run python -m datasets.spreadsheetbench_package data/spreadsheetbench
 
 The conversion creates the package's `dataset.json` and `index.json`, preserving
 original task order and listing each input/answer workbook pair. The current
-configuration selects task `12307`, a cell-level question with three cases.
+configuration selects `12307`, `15380`, `15829`, `13-1`, and `17-35`.
 
 The trial shows OpenHands only the first input workbook. It must create
 `/workspace/solution.py` accepting input and output paths and produce
@@ -61,43 +61,21 @@ uv run --no-sync python -m evaluation \
   --name spreadsheetbench-12307-openhands --plan
 ```
 
-The preview should show task `12307` and `planned_trials: 1`. Remove `--plan`
-only when `.env` contains a valid `DEEPSEEK_API_KEY`,
-`RESEARCH_PROJECT_ID=research`, and `RESEARCH_USER_ID=your-id`; running the trial
-calls a paid model. Use a new experiment name to preserve earlier attempts.
-The existing `cost_tracking = true` and recorder settings import trace usage
-into `agent/usage.jsonl` and `logs/model-usage.sqlite3`. Check the ledger from
-the research root with:
+The preview should show the five task IDs and `planned_trials: 5`. For a first
+single-task run, temporarily set `task_ids = ["12307"]`; this should show one
+trial. Before running, set `THINGO_UNI_API_KEY` in the ignored `research/.env`.
+Running without `--plan` calls a paid model. Use a fresh experiment name for
+each attempt so failed runs remain available. The recorder writes `agent/trace/`,
+`agent/usage.jsonl`, and `agent/usage-config.json` in each trial directory.
+Never commit `.env` or the resource package.
 
-```sh
-uv run --no-sync python -m research_llm logs/model-usage.sqlite3 research --user 'your-id'
-```
+## First-week observations
 
-The first Linux attempt, `spreadsheetbench-12307-openhands-linux`, reached the
-Agent but received HTTP 401 from DeepSeek because the configured key was
-invalid. Its `reward` is null; the ledger records one failed call with missing
-usage and unknown cost. Never commit `.env` or the resource package.
-
-## First single-task result
-
-All attempts used task `12307`, one `no-skill` trial, and the same model and
-dataset. The original 912 tasks and workbooks remain outside Git.
-
-| Attempt | Stage reached | Result | Model accounting |
-| --- | --- | --- | --- |
-| `spreadsheetbench-12307-openhands` | Environment | Windows BenchFlow import failed: `fcntl` unavailable | No model call |
-| `spreadsheetbench-12307-openhands-linux` | Agent | DeepSeek rejected the first request with HTTP 401; reward unknown | 1 failed call; usage and cost unknown |
-| `spreadsheetbench-12307-openhands-linux-2` | Evaluation | Three cases passed; pass fraction 1.0; strict reward 1.0 | 13 completed calls; estimated CNY 0.06342848 |
-
-For the successful attempt, `answer_position` was `I12:I13`. The Agent produced
-`solution.py` and `output.xlsx`; the evaluator replayed the script on cases 2
-and 3. `verifier/cases.json` reports `[1, 1, 1]`, and the trial's `result.json`
-reports `status=completed`, `reward=1.0`, and no errors. The trace, usage log,
-usage configuration, script, and workbook outputs are in the ignored local
-experiment directory under `logs/exp/spreadsheetbench/`. This is one selected
-task, so it establishes that the baseline can run end to end; it does not
-estimate performance over all 912 tasks. The 13 completed calls used 101,248
-input tokens and 11,964 output tokens, including 87,424 cached input tokens.
-The Agent needed 98.49 seconds and evaluation 28.69 seconds in this run. The 401
-request remains in the ledger as an unpriced call and is not included in the CNY
-estimate.
+The first five tasks were run once with DeepSeek Flash and OpenHands. Task
+`12307` was rerun after a verifier shell script with Windows line endings failed
+on Linux. Its later run passed all three cases. Tasks `13-1` and `17-35` ran the
+replay script successfully, but the original verifier crashed on blank cells in
+read-only workbooks. Their original `result.json` files retain `reward=null`;
+the stored output workbooks were scored separately with the corrected verifier.
+See the personal delivery repository's `REPORT.md` for the per-task results and
+failure analysis.

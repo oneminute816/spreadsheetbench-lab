@@ -9,7 +9,7 @@ from uuid import uuid4
 from zipfile import BadZipFile
 
 import openpyxl
-from openpyxl.utils.cell import range_boundaries
+from openpyxl.utils.cell import get_column_letter, range_boundaries
 from openpyxl.utils.exceptions import InvalidFileException
 
 
@@ -68,13 +68,18 @@ def compare(expected, actual, answer_position: str) -> tuple[bool, str]:
             return False, f"worksheet not found: {sheet_name}"
         min_col, min_row, max_col, max_row = range_boundaries(cell_range)
         reference_sheet, output_sheet = expected[sheet_name], actual[sheet_name]
-        for row in reference_sheet.iter_rows(
+        reference_rows = reference_sheet.iter_rows(
             min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col
-        ):
-            for cell in row:
-                found = output_sheet[cell.coordinate].value
+        )
+        output_rows = output_sheet.iter_rows(
+            min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col
+        )
+        for row_index, (reference_row, output_row) in enumerate(zip(reference_rows, output_rows), start=min_row):
+            for column_index, (cell, output_cell) in enumerate(zip(reference_row, output_row), start=min_col):
+                coordinate = f"{get_column_letter(column_index)}{row_index}"
+                found = output_cell.value
                 if not same_value(cell.value, found):
-                    return False, f"Value difference at {sheet_name}!{cell.coordinate}: expected {cell.value!r}, got {found!r}"
+                    return False, f"Value difference at {sheet_name}!{coordinate}: expected {cell.value!r}, got {found!r}"
     return True, ""
 
 
