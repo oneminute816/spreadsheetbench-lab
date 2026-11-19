@@ -3,3 +3,4 @@ package = "../../data/spreadsheetbench"
 task_ids = ["12307", "15380", "15829", "13-1", "17-35"]
 loader = "datasets.spreadsheetbench:load_tasks"
 prepare = "datasets.spreadsheetbench:prepare_task"
+setup = "datasets.spreadsheetbench:setup_environment"

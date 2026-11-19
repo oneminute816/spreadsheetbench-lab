@@ -1,0 +1,16 @@
+[
+  {
+    "case": 2,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "I12 = 2 (ABC)\nI13 = 1 (EFG)\n",
+    "stderr": ""
+  },
+  {
+    "case": 3,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "I12 = 1 (ABC)\nI13 = 1 (EFG)\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,7 @@
+output_dir = "../../logs/exp"
+conditions = ["with-skill"]
+repeats = 1
+pass_threshold = 1.0
+
+[evaluator]
+function = "datasets.spreadsheetbench:evaluate"

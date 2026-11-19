@@ -15,6 +15,16 @@ The conversion creates the package's `dataset.json` and `index.json`, preserving
 original task order and listing each input/answer workbook pair. The current
 configuration selects `12307`, `15380`, `15829`, `13-1`, and `17-35`.
 
+The `no-skill` condition uses `config/evaluation/spreadsheetbench.toml`.
+For `with-skill`, select `config/evaluation/spreadsheetbench-with-skill.toml`
+and place the separately supplied SkillsBench resource package at
+`data/skillsbench/`. The adapter reads
+`data/skillsbench/skills/xlsx-recover-data/xlsx/SKILL.md`, records its SHA-256
+in `task-info.json`, and injects that skill into the trial container at
+`/skills/xlsx/`. Both harnesses use their existing terminal tool to read it.
+The `no-skill` condition injects no skill. A catalog entry establishes
+availability; use `agent/tool-calls.jsonl` or the trace to check actual reading.
+
 The trial shows the Agent only the first input workbook. It must create
 `/workspace/solution.py` accepting input and output paths and produce
 `/workspace/output.xlsx`. After the agent stops, the evaluator runs that script
@@ -62,12 +72,16 @@ uv run --no-sync python -m evaluation \
 ```
 
 The preview should show the five task IDs and `planned_trials: 5`. For a first
-single-task run, temporarily set `task_ids = ["12307"]`; this should show one
-trial. Before running, set `THINGO_UNI_API_KEY` in the ignored `research/.env`.
+single-task run, append `--task 12307`; this should show one trial. Before
+running, set `THINGO_UNI_API_KEY` in the ignored `research/.env`.
 Running without `--plan` calls a paid model. Use a fresh experiment name for
 each attempt so failed runs remain available. The recorder writes `agent/trace/`,
 `agent/usage.jsonl`, and `agent/usage-config.json` in each trial directory.
 Never commit `.env` or the resource package.
+
+To preview a with-skill run, change only `--evaluation` to
+`config/evaluation/spreadsheetbench-with-skill.toml`, select a fresh experiment
+name, and keep the same `--task` selection. Remove `--plan` to run it.
 
 ## First-week observations
 

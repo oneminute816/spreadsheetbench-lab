@@ -1,0 +1,16 @@
+[
+  {
+    "case": 2,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "tariff=NSP56 usage=2000 fee=0.0 cell=B3 cached=0.0\n",
+    "stderr": ""
+  },
+  {
+    "case": 3,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "tariff=NSP77 usage=5000 fee=800.0 cell=B3 cached=800.0\n",
+    "stderr": ""
+  }
+]

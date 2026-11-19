@@ -1,0 +1,16 @@
+[
+  {
+    "case": 2,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "289 rows (2023-03-22 .. 2024-04-23) -> /workspace/2_output.xlsx\n",
+    "stderr": ""
+  },
+  {
+    "case": 3,
+    "exit_code": 0,
+    "timed_out": false,
+    "stdout": "275 rows (2023-03-22 .. 2023-10-23) -> /workspace/3_output.xlsx\n",
+    "stderr": ""
+  }
+]

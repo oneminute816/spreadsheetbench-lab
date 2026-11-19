@@ -1,0 +1,28 @@
+{
+  "task_id": "15380",
+  "answer_position": "B3:B14",
+  "test_case_results": [
+    1,
+    0,
+    0
+  ],
+  "soft_restriction": 0.3333333333333333,
+  "hard_restriction": 0,
+  "case_details": [
+    {
+      "case": 1,
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "case": 2,
+      "passed": false,
+      "reason": "Value difference at Sheet3!B3: expected 'FEB', got 'SEP'"
+    },
+    {
+      "case": 3,
+      "passed": false,
+      "reason": "Value difference at Sheet3!B3: expected 'SEP', got 'FEB'"
+    }
+  ]
+}

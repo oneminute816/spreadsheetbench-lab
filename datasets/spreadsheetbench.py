@@ -5,12 +5,15 @@ import json
 from pathlib import Path
 import shutil
 
+import yaml
+
 from datasets.package import read_package_index, resource_path
 from evaluation.contracts import AgentResult, PreparedTask, Score, Task, TrialContext
 
 
 TASK_FORMAT = "research-spreadsheetbench-v1"
 RUNTIME = Path(__file__).with_name("spreadsheetbench_runtime")
+XLSX_SKILL = Path("skillsbench/skills/xlsx-recover-data/xlsx")
 
 
 def _records(package):
@@ -72,8 +75,8 @@ def load_tasks(index: Path, task_ids: list[str] | None = None) -> list[Task]:
 
 
 def prepare_task(task: Task, destination: Path, condition: str) -> PreparedTask:
-    if condition != "no-skill":
-        raise ValueError(f"SpreadsheetBench baseline supports only no-skill, got {condition!r}")
+    if condition not in {"no-skill", "with-skill"}:
+        raise ValueError(f"Unsupported SpreadsheetBench condition: {condition!r}")
     package = read_package_index(task.source["index"], task_format=TASK_FORMAT)
     _records(package)
     if package.metadata["provenance"]["raw_dataset_sha256"] != task.source["raw_dataset_sha256"]:
@@ -100,7 +103,54 @@ def prepare_task(task: Task, destination: Path, condition: str) -> PreparedTask:
         "---\n\n" + task.instruction + "\n"
     )
     (destination / "task.md").write_text(task_document, encoding="utf-8")
-    return PreparedTask(destination)
+    if condition == "no-skill":
+        return PreparedTask(destination)
+
+    source = package.root.parent / XLSX_SKILL
+    skill_file = source / "SKILL.md"
+    if not source.is_dir() or not skill_file.is_file():
+        raise FileNotFoundError(f"SkillsBench xlsx skill is missing: {source}")
+    for path in source.rglob("*"):
+        if path.is_symlink() or path.is_junction():
+            raise ValueError(f"Linked skill resources are not supported: {path}")
+    lines = skill_file.read_text(encoding="utf-8-sig").splitlines()
+    if not lines or lines[0] != "---":
+        raise ValueError(f"Skill frontmatter is missing: {skill_file}")
+    end = next((index for index, line in enumerate(lines[1:], 1) if line == "---"), None)
+    if end is None:
+        raise ValueError(f"Skill frontmatter is incomplete: {skill_file}")
+    metadata = yaml.safe_load("\n".join(lines[1:end]))
+    if (not isinstance(metadata, dict) or metadata.get("name") != "xlsx"
+            or not isinstance(metadata.get("description"), str)
+            or not metadata["description"].strip()):
+        raise ValueError(f"Unexpected SkillsBench xlsx skill metadata: {skill_file}")
+
+    skills_dir = destination.parent / "skills"
+    shutil.copytree(source, skills_dir / "xlsx")
+    catalog = [{
+        "name": metadata["name"],
+        "description": metadata["description"],
+        "path": "/skills/xlsx/SKILL.md",
+        "sha256": hashlib.sha256(skill_file.read_bytes()).hexdigest(),
+        "source": "data/skillsbench/skills/xlsx-recover-data/xlsx",
+    }]
+    return PreparedTask(destination, skills_dir, catalog)
+
+
+async def setup_environment(context: TrialContext) -> None:
+    absent = await context.environment.execute(["test", "!", "-e", "/skills"], timeout=10)
+    if absent.timed_out:
+        raise TimeoutError("Checking /skills timed out")
+    if not absent.success:
+        raise ValueError("Task image already contains /skills")
+    if context.condition == "no-skill":
+        if context.prepared.skills_dir is not None or context.prepared.skill_catalog:
+            raise ValueError("no-skill task exposes a skill")
+        return
+    if (context.condition != "with-skill" or context.prepared.skills_dir is None
+            or len(context.prepared.skill_catalog) != 1):
+        raise ValueError("with-skill task is missing the xlsx skill")
+    await context.environment.upload(context.prepared.skills_dir, "/skills")
 
 
 def create_environment(task_dir: Path, *, output_dir: Path, **options):

@@ -2,6 +2,11 @@
 .venv/
 data/
 logs/
-evidence/
+evidence/raw/
+evidence/**/*.xlsx
+evidence/**/*.jsonl
+evidence/**/trace/
+evidence/**/usage-config.json
+evidence/**/result.json
 __pycache__/
 *.py[oc]
