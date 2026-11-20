@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "source": "skillsbench/skills",
+  "skills": [
+    {
+      "name": "xlsx",
+      "relative_dir": "xlsx-recover-data/xlsx",
+      "sha256": "fa55245ff2b9789a2976b4f7359bd4d1a4400219407bce1f0f4d58cd81ecfd84"
+    },
+    {
+      "name": "academic-pdf-redaction",
+      "relative_dir": "paper-anonymizer/academic-pdf-redaction",
+      "sha256": "022412e479aabeeda0cb2e51ce102ec0ba4da9d1b9936dcf657abe760933b53a"
+    },
+    {
+      "name": "ada-plan-view-accessibility",
+      "relative_dir": "ada-bathroom-plan-repair/ada-plan-view-accessibility",
+      "sha256": "a07229d174dc81de1b1b1bf79f62eb450f0e497dc3e30b79633fcce3a35f621c"
+    },
+    {
+      "name": "analyze-ci",
+      "relative_dir": "fix-build-agentops/analyze-ci",
+      "sha256": "ebf10c1c4f7e49efbb7112ac0b5160d0549596d1db7ee961b9ecd4c6182ae6c5"
+    },
+    {
+      "name": "architectural-dxf-extraction",
+      "relative_dir": "ada-bathroom-plan-repair/architectural-dxf-extraction",
+      "sha256": "22f9dfaa9a908c8915f448a5e9436ec7bf2e3debdf9058ca85587c9d88a4dd90"
+    },
+    {
+      "name": "attitude-controller-planner",
+      "relative_dir": "drone-planning-control/attitude-controller-planner",
+      "sha256": "74fee808cc95cbea5e00b0dc6f3e879385280fd875e9450103e6e3cd8a1cdad9"
+    },
+    {
+      "name": "audiobook",
+      "relative_dir": "pg-essay-to-audiobook/audiobook",
+      "sha256": "c547b7a66dad3d54c77c6d41e1c0a2aad42bfab884a5e8d823df108978731880"
+    },
+    {
+      "name": "azure-bgp",
+      "relative_dir": "azure-bgp-oscillation-route-leak/azure-bgp",
+      "sha256": "bcc00eb38560e6740fea25a78d29ecd26d6e79cf29630bebecf60510923634c6"
+    },
+    {
+      "name": "box-least-squares",
+      "relative_dir": "exoplanet-detection-period/box-least-squares",
+      "sha256": "99ff1386a55255b724fca79573c5d94f28ac7412ff2dd25f8d01a57c426dcbbc"
+    },
+    {
+      "name": "cache-policy-comparison",
+      "relative_dir": "llm-prefix-cache-replay/cache-policy-comparison",
+      "sha256": "3942f72bbdf763d7a1a859b71dcb279e5b8d90a74f69d62a6dfda620b0bb6469"
+    },
+    {
+      "name": "casadi-ipopt-nlp",
+      "relative_dir": "energy-ac-optimal-power-flow/casadi-ipopt-nlp",
+      "sha256": "6a53176de410034235933d325a6e71b41e9ff9acdd03351ea4b769a969c00618"
+    },
+    {
+      "name": "comp3-packed-decimal",
+      "relative_dir": "cobol-gl-batch-reconcile/comp3-packed-decimal",
+      "sha256": "c935e22bab844325f386345e37ebb2329c3f113400402a219852a332fb562fd3"
+    },
+    {
+      "name": "conditioning",
+      "relative_dir": "gravitational-wave-detection/conditioning",
+      "sha256": "edb0502bfb2391ab5ac9b55be2fa7381085dfa1534bd1362f5a15907e4238a2b"
+    },
+    {
+      "name": "constraint-parser",
+      "relative_dir": "scheduling-email-assistant/constraint-parser",
+      "sha256": "e3706e912726a624afe6de2912c291526e755c6a2093187b7bf71d014e87f950"
+    },
+    {
+      "name": "contract-playbook-review",
+      "relative_dir": "nda-playbook-review/contract-playbook-review",
+      "sha256": "c8c3ce38a73110fd51dc2338983a134c457502e37e4826f23be000e1664776a5"
+    },
+    {
+      "name": "contribution-analysis",
+      "relative_dir": "lake-warming-attribution/contribution-analysis",
+      "sha256": "1abad01c2a75df0b869bd49136a8e303d88956b38bc5445ca47d88aaac8ddcf9"
+    },
+    {
+      "name": "csv-processing",
+      "relative_dir": "adaptive-cruise-control/csv-processing",
+      "sha256": "853782797f455370ed55323451b2d43dfb0d59ce9b17a862fc3d52e515e1ae83"
+    },
+    {
+      "name": "custom-distance-metrics",
+      "relative_dir": "mars-clouds-clustering/custom-distance-metrics",
+      "sha256": "502b3f54349a40aa709a6af422117584fd3a2e290244943814929e10f2f5c879"
+    },
+    {
+      "name": "cvss-score-extraction",
+      "relative_dir": "software-dependency-audit/cvss-score-extraction",
+      "sha256": "49e0b94b0b3b48e4135aac096cf74e71b3cb6906611e2dcc57ebac7b8f269491"
+    },
+    {
+      "name": "data-reconciliation",
+      "relative_dir": "xlsx-recover-data/data-reconciliation",
+      "sha256": "dcf8c056972e12ebe28ee256e5bf5e1cef5038ffa997edd4614086a3850d389e"
+    },
+    {
+      "name": "discover-important-function",
+      "relative_dir": "setup-fuzzing-py/discover-important-function",
+      "sha256": "4bab2b9f0b3012d50b954b8d13203dfa07f686011ca6c21ba0bb4801f5fa2ef2"
+    },
+    {
+      "name": "dyn-object-masks",
+      "relative_dir": "dynamic-object-aware-egomotion/dyn-object-masks",
+      "sha256": "a053c46c93697db70d9f571e144790b35e7f0e88cf0b5680b604ba318b29ea23"
+    },
+    {
+      "name": "ebcdic-overpunch-decoding",
+      "relative_dir": "cobol-gl-batch-reconcile/ebcdic-overpunch-decoding",
+      "sha256": "f0c27ff5d5cfed1b37d203dd8607a980057dfe5adaff9f6de7b5526b8b244472"
+    },
+    {
+      "name": "egomotion-estimation",
+      "relative_dir": "dynamic-object-aware-egomotion/egomotion-estimation",
+      "sha256": "a70c8b68974b762eff4b9a13fe0d9e8fe47e5a932bdb10873a8961b846e61c84"
+    },
+    {
+      "name": "elevenlabs-tts",
+      "relative_dir": "pg-essay-to-audiobook/elevenlabs-tts",
+      "sha256": "17ea6962ccf298d3d81778a8e56464df761f78cbdfc4cf8e8efdfd70a05497bb"
+    },
+    {
+      "name": "enterprise-artifact-search",
+      "relative_dir": "enterprise-information-search/enterprise-artifact-search",
+      "sha256": "3cef275b66b4581298c194b1ea757dd1cfbcefe9482203de8f6f2ab34edac707"
+    },
+    {
+      "name": "erlang-concurrency",
+      "relative_dir": "fix-erlang-ssh-cve/erlang-concurrency",
+      "sha256": "d16ada853a6f03a181ceac14804e7572cad516e0dded5e013b43e451ffcf4f29"
+    },
+    {
+      "name": "erlang-distribution",
+      "relative_dir": "fix-erlang-ssh-cve/erlang-distribution",
+      "sha256": "025dd0af514352e2d46b205cbee4fea62392085c23dcb16266796214d569cd6b"
+    },
+    {
+      "name": "erlang-otp-behaviors",
+      "relative_dir": "fix-erlang-ssh-cve/erlang-otp-behaviors",
+      "sha256": "6ed72618f963f70f9054a55f0fd345404bc676bb7b002351936b52837d617420"
+    },
+    {
+      "name": "excitation-signal-design",
+      "relative_dir": "hvac-control/excitation-signal-design",
+      "sha256": "22fc70845914056b3f7f25ed2b06153b8f077a9cbca07c99d3236fe7c6cf0ad0"
+    },
+    {
+      "name": "exoplanet-workflows",
+      "relative_dir": "exoplanet-detection-period/exoplanet-workflows",
+      "sha256": "d9150c5f0adb9ece57fc5f305239bfcb840f3180fcffc252772bc15662f70c11"
+    },
+    {
+      "name": "ffmpeg-audio-processing",
+      "relative_dir": "multilingual-video-dubbing/ffmpeg-audio-processing",
+      "sha256": "5585fac129b391a7ad8c9f4b3887313bd1f660463e7be1161a3d944bebfc0d67"
+    },
+    {
+      "name": "ffmpeg-format-conversion",
+      "relative_dir": "multilingual-video-dubbing/ffmpeg-format-conversion",
+      "sha256": "2f973309a7a5600f12e022fb7840072618560af8302354a46ec10b1425e369f4"
+    },
+    {
+      "name": "ffmpeg-keyframe-extraction",
+      "relative_dir": "mario-coin-counting/ffmpeg-keyframe-extraction",
+      "sha256": "7991e724ae94a92e9dbf1ed9b7f8f275d93ba5a3d6b352ce80248b0f6aedafdb"
+    },
+    {
+      "name": "ffmpeg-media-info",
+      "relative_dir": "multilingual-video-dubbing/ffmpeg-media-info",
+      "sha256": "fe267c5bb314a9209f52737dc8760aa5efb674d2639f92e453b36ec38a67b796"
+    },
+    {
+      "name": "ffmpeg-video-filters",
+      "relative_dir": "multilingual-video-dubbing/ffmpeg-video-filters",
+      "sha256": "b5bcaa179447510b40503bb3444af7d0fd7571d12a58af23a0e1d7309762a7ed"
+    },
+    {
+      "name": "file-organizer",
+      "relative_dir": "organize-messy-files/file-organizer",
+      "sha256": "31fd6f45309127e9a0c18405cf7f207586484c42ee456510ba09e991da89ad77"
+    },
+    {
+      "name": "filler-word-processing",
+      "relative_dir": "video-filler-word-remover/filler-word-processing",
+      "sha256": "264758e0a82ce245293c285b9847dd1f94d50f2e507e37e39f3f7c15d49adb5a"
+    },
+    {
+      "name": "find-bugs",
+      "relative_dir": "fix-erlang-ssh-cve/find-bugs",
+      "sha256": "fc6910737cc003d0df93f79580baaa3e5c1f8dc5170f6832c85b0a8662f5826e"
+    },
+    {
+      "name": "finite-horizon-lqr",
+      "relative_dir": "r2r-mpc-control/finite-horizon-lqr",
+      "sha256": "60b33577135ac50e243f76cc56d93248f0bf6009e4473b0cfe2e5e563f5d7882"
+    },
+    {
+      "name": "first-order-model-fitting",
+      "relative_dir": "hvac-control/first-order-model-fitting",
+      "sha256": "022676d9d6996e36d14433f06734b0b388471b4bfd07f834f172790671e571cc"
+    },
+    {
+      "name": "fjsp-baseline-repair-with-downtime-and-policy",
+      "relative_dir": "manufacturing-fjsp-optimization/fjsp-baseline-repair-with-downtime-and-policy",
+      "sha256": "382db8abddf4e667a0259af0117f37194dfa702e21ae4ccebd8cb064f268fe48"
+    },
+    {
+      "name": "flight-plan-parser",
+      "relative_dir": "drone-planning-control/flight-plan-parser",
+      "sha256": "54ac3bf939e924ae3fa10755af2b84e414adee21dcdf5c8ad8d35602159028ca"
+    },
+    {
+      "name": "flood-detection",
+      "relative_dir": "flood-risk-analysis/flood-detection",
+      "sha256": "f5bfa6cffa34ba24739d5e254cda993a2203681f099486f0def0633d0b08d0f3"
+    },
+    {
+      "name": "fragmentation-aware-packing",
+      "relative_dir": "gpu-cluster-online-scheduling/fragmentation-aware-packing",
+      "sha256": "156fe7c759d1d80e5cd6328fef35f4bf6d314abba5b096119b8685e8431aade6"
+    },
+    {
+      "name": "fuzzing-python",
+      "relative_dir": "setup-fuzzing-py/fuzzing-python",
+      "sha256": "ad65e531bd79b962d2cb9678099d92f865899b206dcbc308353444fc8cac4a1f"
+    },
+    {
+      "name": "fuzzy-match",
+      "relative_dir": "invoice-fraud-detection/fuzzy-match",
+      "sha256": "8e216813a6aeed30f75ea1df3fc1fedf9a9bb917083e32547ae3a38e9c030906"
+    },
+    {
+      "name": "gamma-phase-associator",
+      "relative_dir": "earthquake-phase-association/gamma-phase-associator",
+      "sha256": "cd38f211758c032a053e96f08bc03cd6ccbed637af1b623d8417f6ec7260ed56"
+    },
+    {
+      "name": "gemini-count-in-video",
+      "relative_dir": "pedestrian-traffic-counting/gemini-count-in-video",
+      "sha256": "543d285f3c6f3882754d41d3f1da6f2197189780da527d79072d077f0112f423"
+    },
+    {
+      "name": "gemini-video-understanding",
+      "relative_dir": "pedestrian-traffic-counting/gemini-video-understanding",
+      "sha256": "b6fbc87810ec6b7f8cc91787d1051e24bf4921d4bfc2d150d4a486706931ba56"
+    },
+    {
+      "name": "geometric-layout-repair",
+      "relative_dir": "ada-bathroom-plan-repair/geometric-layout-repair",
+      "sha256": "e30ed095b75e905b186216040b237ba5c91f78e5796098075c7d36383597a852"
+    }
+  ]
+}

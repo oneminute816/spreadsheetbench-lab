@@ -1,0 +1,239 @@
+diff --git a/README.md b/README.md
+index 9d3edbe..da21195 100644
+--- a/README.md
++++ b/README.md
+@@ -75,6 +75,19 @@ uv run skill-registry
+ 
+ 服务运行期间会自动重新扫描已注册的技能根目录，默认间隔 1 秒。新增或删除 Skill、修改 `SKILL.md`、新增或删除资源文件后，后续请求会读取更新后的注册表；资源文件的内容本来就是按请求读取，因此内容修改无需等待扫描。通过 `/discover_skills` 添加的目录也会一起自动刷新。
+ 
++若需要操作完成后立即生效，可使用管理接口（服务无需重启）：
++
++```sh
++curl -X POST http://127.0.0.1:5000/add_skill -H 'Content-Type: application/json' \
++  -d '{"root_dir":"/srv/skills/xlsx"}'
++curl -X POST http://127.0.0.1:5000/delete_skill -H 'Content-Type: application/json' \
++  -d '{"skill_name":"xlsx"}'
++```
++
++`add_skill` 只接收包含 `SKILL.md` 的单个技能目录，要求 YAML frontmatter 中有符合小写连字符命名的 `name` 和非空 `description`；重名或无效目录返回 HTTP 400。`delete_skill` 从运行时索引移除技能，源目录保持不变；未知名称返回 HTTP 404。两种操作在响应成功前发布完整索引，后续 `/search_skills` 和 `/load_skill` 请求立即看到变化。通过启动扫描发现的技能也可卸载，后台重扫不会自动恢复；再次调用 `/add_skill` 或 `/discover_skills` 可重新启用。
++
++管理接口访问服务所在机器的文件路径，和现有 `/discover_skills` 一样仅适合可信网络。任务二在本机使用 `HOST=127.0.0.1` 运行，避免对外开放这些无鉴权接口。
++
+ 可在启动前设置扫描间隔（秒）：
+ 
+ ```powershell
+diff --git a/src/skill_registry/app.py b/src/skill_registry/app.py
+index b99f68f..a9cae78 100644
+--- a/src/skill_registry/app.py
++++ b/src/skill_registry/app.py
+@@ -26,7 +26,7 @@ OPENAPI_TAGS = [
+     },
+     {
+         "name": "技能管理",
+-        "description": "技能新增和删除接口；当前仍在开发中。",
++        "description": "运行期间新增和卸载技能，不删除源文件。",
+     },
+ ]
+ 
+diff --git a/src/skill_registry/models.py b/src/skill_registry/models.py
+index 881dc06..2e06532 100644
+--- a/src/skill_registry/models.py
++++ b/src/skill_registry/models.py
+@@ -34,6 +34,11 @@ class SkillListResponse(BaseModel):
+     skills: list[SkillSummary] = Field(description="技能摘要列表。")
+ 
+ 
++class DeleteSkillResponse(BaseModel):
++    name: str = Field(description="已从运行时注册表移除的技能名称。")
++    deleted: bool = Field(description="是否完成移除。")
++
++
+ class LoadedSkill(BaseModel):
+     """已加载的技能内容。"""
+ 
+@@ -125,10 +130,3 @@ class ErrorResponse(BaseModel):
+     """参数错误、技能不存在或资源不存在时的返回值。"""
+ 
+     error: ErrorDetail = Field(description="错误信息。")
+-
+-
+-class NotImplementedResponse(BaseModel):
+-    """接口尚未实现时的返回值。"""
+-
+-    code: str = Field(description="错误代码。", examples=["not_implemented"])
+-    message: str = Field(description="接口当前状态的说明。")
+diff --git a/src/skill_registry/registry.py b/src/skill_registry/registry.py
+index 7d21d50..ecd4693 100644
+--- a/src/skill_registry/registry.py
++++ b/src/skill_registry/registry.py
+@@ -155,6 +155,8 @@ class SkillRegistry:
+     ):
+         self.skills: Dict[str, Skill] = {}
+         self._roots: dict[str, dict[str, Skill]] = {}
++        self._managed: dict[str, Skill] = {}
++        self._hidden: set[str] = set()
+         self._scan_lock = Lock()
+         self.execution_provider = (
+             execution_provider
+@@ -164,13 +166,42 @@ class SkillRegistry:
+ 
+         self.discover_skills(skills_dir)
+ 
+-    def add_skill():
+-        # TODO: 添加 skill
+-        pass
++    def add_skill(self, root_dir: str) -> Skill:
++        """Register one SKILL.md directory and publish it before returning."""
++        skill_dir = Path(root_dir).resolve()
++        if not skill_dir.is_dir() or not (skill_dir / self.SKILL_FILENAME).is_file():
++            raise ValueError(f"Skill directory must contain SKILL.md: {root_dir}")
++        try:
++            skill = Skill.from_root(str(skill_dir))
++        except (OSError, UnicodeError, yaml.YAMLError) as error:
++            raise ValueError(f"Cannot read SKILL.md: {error}") from error
++        self._validate_skill(skill)
++
++        with self._scan_lock:
++            if skill.skill_name in self.skills:
++                raise ValueError(f"Skill name already registered: {skill.skill_name}")
++            self._managed[skill.skill_name] = skill
++            self._hidden.discard(skill.skill_name)
++            self._publish_snapshot()
++        return skill
+ 
+-    def delte_skill():
+-        # TODO: 删除 skill
+-        pass
++    @staticmethod
++    def _validate_skill(skill: Skill) -> None:
++        if not isinstance(skill.meta.get("name"), str) or not re.fullmatch(
++            r"[a-z0-9]+(?:-[a-z0-9]+)*", skill.skill_name
++        ):
++            raise ValueError("SKILL.md name must be a lowercase hyphenated name")
++        if not isinstance(skill.descrption, str) or not skill.descrption.strip():
++            raise ValueError("SKILL.md description must be a non-empty string")
++
++    def delete_skill(self, skill_name: str) -> None:
++        """Hide a registered skill without deleting its source directory."""
++        with self._scan_lock:
++            if skill_name not in self.skills:
++                raise SkillNotFoundError(f"Unknown skill: {skill_name}")
++            self._managed.pop(skill_name, None)
++            self._hidden.add(skill_name)
++            self._publish_snapshot()
+ 
+     def discover_skills(self, root_dir: str):
+         """
+@@ -182,6 +213,7 @@ class SkillRegistry:
+             # 后注册的根目录在技能重名时优先，和原有的覆盖行为一致。
+             self._roots.pop(root_dir, None)
+             self._roots[root_dir] = discovered
++            self._hidden.difference_update(discovered)
+             self._publish_snapshot()
+ 
+     def refresh(self) -> None:
+@@ -191,14 +223,27 @@ class SkillRegistry:
+                 root_dir: self._scan_root(root_dir)
+                 for root_dir in self._roots
+             }
++            managed = {}
++            for name, skill in self._managed.items():
++                skill_file = Path(skill.root_dir) / self.SKILL_FILENAME
++                if not skill_file.is_file():
++                    continue
++                updated = Skill.from_root(skill.root_dir)
++                if updated.skill_name != name:
++                    raise ValueError(f"Registered skill changed name: {name}")
++                self._validate_skill(updated)
++                managed[name] = updated
+             self._roots = refreshed
++            self._managed = managed
+             self._publish_snapshot()
+ 
+     def _publish_snapshot(self) -> None:
+         skills: Dict[str, Skill] = {}
+         for root_skills in self._roots.values():
+             skills.update(root_skills)
+-        self.skills = skills
++        skills.update(self._managed)
++        self.skills = {name: skill for name, skill in skills.items()
++                       if name not in self._hidden}
+ 
+     def _scan_root(self, root_dir: str) -> dict[str, Skill]:
+         """Skill 目录下的其它文件是资源，不继续发现嵌套 Skill。"""
+diff --git a/src/skill_registry/routes.py b/src/skill_registry/routes.py
+index 2600f74..48127c8 100644
+--- a/src/skill_registry/routes.py
++++ b/src/skill_registry/routes.py
+@@ -5,7 +5,6 @@ from http import HTTPStatus
+ from typing import Any
+ 
+ from fastapi import APIRouter, Request
+-from fastapi.responses import JSONResponse
+ from starlette.concurrency import run_in_threadpool
+ 
+ from .api_docs import (
+@@ -23,11 +22,12 @@ from .expection import (
+ from .models import (
+     ErrorDetail,
+     ErrorResponse,
++    DeleteSkillResponse,
+     ExecuteResourceResponse,
+     LoadResourceResponse,
+     LoadSkillResponse,
+-    NotImplementedResponse,
+     SkillListResponse,
++    SkillSummary,
+ )
+ 
+ from .registry import Skill, SkillRegistry
+@@ -164,35 +164,28 @@ async def discover_skills(request: Request) -> dict[str, Any]:
+     "/add_skill",
+     tags=["技能管理"],
+     summary="新增技能",
+-    description="新增技能接口，当前尚未实现。",
+-    status_code=HTTPStatus.NOT_IMPLEMENTED,
+-    response_model=NotImplementedResponse,
+-    response_description="接口尚未实现。",
++    description="注册一个包含 SKILL.md 的目录；成功返回后立即可搜索和加载。",
++    response_model=SkillSummary,
++    response_description="新注册技能的摘要。",
+ )
+-async def add_skill() -> JSONResponse:
+-    return JSONResponse(
+-        status_code=HTTPStatus.NOT_IMPLEMENTED,
+-        content={"code": "not_implemented", "message": "add_skill 接口正在开发中"},
+-    )
++async def add_skill(request: Request) -> dict[str, Any]:
++    root_dir = await _require_string(request, "root_dir")
++    skill = await run_in_threadpool(_registry(request).add_skill, root_dir)
++    return skill.format_meta()
+ 
+ 
+ @router.post(
+     "/delete_skill",
+     tags=["技能管理"],
+     summary="删除技能",
+-    description="删除技能接口，当前尚未实现。",
+-    status_code=HTTPStatus.NOT_IMPLEMENTED,
+-    response_model=NotImplementedResponse,
+-    response_description="接口尚未实现。",
++    description="从运行时注册表移除技能；不删除源目录。",
++    response_model=DeleteSkillResponse,
++    response_description="移除结果。",
+ )
+-async def delete_skill() -> JSONResponse:
+-    return JSONResponse(
+-        status_code=HTTPStatus.NOT_IMPLEMENTED,
+-        content={
+-            "code": "not_implemented",
+-            "message": "delete_skill 接口正在开发中",
+-        },
+-    )
++async def delete_skill(request: Request) -> dict[str, Any]:
++    skill_name = await _require_string(request, "skill_name")
++    await run_in_threadpool(_registry(request).delete_skill, skill_name)
++    return {"name": skill_name, "deleted": True}
+ 
+ 
+ @router.post(

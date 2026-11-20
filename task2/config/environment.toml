@@ -1,0 +1,5 @@
+[environment]
+factory = "datasets.spreadsheetbench:create_environment"
+registry_url = "http://127.0.0.1:5000"
+startup_timeout = 1800
+cleanup_timeout = 180

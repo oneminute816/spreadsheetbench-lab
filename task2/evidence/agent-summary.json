@@ -1,0 +1,22 @@
+{
+  "experiment": "task2-registry-xlsx-12307-linux",
+  "task_id": "12307",
+  "condition": "registry-skill",
+  "planned_trials": 1,
+  "completed_trials": 1,
+  "registry_setup": "xlsx content matched the task-one source",
+  "skill_sha256": "fa55245ff2b9789a2976b4f7359bd4d1a4400219407bce1f0f4d58cd81ecfd84",
+  "trace": {
+    "search_skills_calls": 0,
+    "load_skill_calls": 1,
+    "load_skill_name": "xlsx",
+    "load_skill_error": false,
+    "returned_body_contains_known_heading": true
+  },
+  "agent_finish_reason": "max_iterations",
+  "original_status": "completed",
+  "original_reward": 1.0,
+  "test_case_results": [1, 1, 1],
+  "duration_sec": 174.5,
+  "notes": "One representative trial; not a stability or causal skill comparison."
+}

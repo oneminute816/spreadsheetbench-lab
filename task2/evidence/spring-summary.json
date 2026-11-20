@@ -1,0 +1,20 @@
+{
+  "upstream_revision": "11b418d3068343d0430e46a58650f97d189159d5",
+  "spring_boot_version": "2.1.9.RELEASE",
+  "java_target": "8",
+  "standalone_module_build": "success",
+  "http_checks": {
+    "search_before_delete": {"count": 1, "name": "xlsx"},
+    "load_before_delete": {"name": "xlsx", "content_nonempty": true, "resource_names": ["LICENSE.txt", "recalc.py"]},
+    "search_after_delete": {"count": 0},
+    "load_after_delete_status": 404,
+    "search_after_reregister": {"count": 1},
+    "same_spring_process": true
+  },
+  "full_upstream_application_build": {
+    "status": "blocked",
+    "stage": "core-common dependency resolution",
+    "dependency": "com.horsecoder:auth:0.1.15",
+    "reason": "Maven 3.9 blocks the configured HTTP repository; direct anonymous access to the private repository returned HTTP 401."
+  }
+}

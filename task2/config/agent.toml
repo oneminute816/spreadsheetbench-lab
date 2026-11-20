@@ -1,0 +1,15 @@
+[model]
+model = "deepseek/deepseek-flash"
+base_url = "https://uniapi.thingo.com.cn/v1"
+api_key_env = "THINGO_UNI_API_KEY"
+timeout = 120
+num_retries = 0
+
+[agent]
+runner = "harness.openhands.runner:execute"
+recorder = "agent_session_analyzer:OpenHandsRecorder"
+cost_tracking = true
+max_iterations = 20
+tool_timeout_sec = 120
+max_output_chars = 20000
+tools = ["search_skills", "load_skill", "terminal", "think", "finish"]

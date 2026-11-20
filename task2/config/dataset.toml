@@ -1,0 +1,6 @@
+[dataset]
+package = "../../../research/data/spreadsheetbench"
+task_ids = ["12307"]
+loader = "task2.registry_spreadsheetbench:load_tasks"
+prepare = "task2.registry_spreadsheetbench:prepare_task"
+setup = "task2.registry_spreadsheetbench:setup_environment"
